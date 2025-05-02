@@ -6,7 +6,7 @@ import { ArrowUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-export function FloatingCta() {
+export function FloatingCTA() {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -48,3 +48,6 @@ export function FloatingCta() {
     </>
   )
 }
+
+// Add this line to provide backward compatibility
+export const FloatingCta = FloatingCTA

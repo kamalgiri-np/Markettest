@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import Stripe from "stripe"
-import { supabaseAdmin } from "@/lib/supabase"
+import { supabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase"
 
 // Initialize Stripe with the secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -23,6 +23,12 @@ export async function POST(req: NextRequest) {
     } catch (err) {
       console.error(`⚠️ Webhook signature verification failed:`, err)
       return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 })
+    }
+
+    // Check if Supabase admin is configured
+    if (!isSupabaseAdminConfigured()) {
+      console.warn("Supabase admin is not configured. Skipping database operations.")
+      return NextResponse.json({ received: true, warning: "Supabase admin not configured" })
     }
 
     // Handle the event

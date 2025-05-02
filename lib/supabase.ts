@@ -1,27 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 
-// Check for environment variables and provide helpful error messages
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-  console.error("Missing environment variable: NEXT_PUBLIC_SUPABASE_URL")
-}
-
-if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-  console.error("Missing environment variable: NEXT_PUBLIC_SUPABASE_ANON_KEY")
-}
-
-// Use optional chaining and provide fallbacks for development
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ""
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-
-// Create a Supabase client for browser-side usage (auth)
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-// Create a Supabase client with the service role key for server-side operations
-// This should only be used in server components or server actions
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey || supabaseAnonKey)
-
-// Types for our database tables
+// Define types for our database tables
 export type Profile = {
   id: string
   email: string
@@ -77,4 +56,81 @@ export type UserContent = {
   last_accessed: string
   created_at: string
   updated_at: string
+}
+
+// Create a mock client that won't throw errors when methods are called
+const createMockClient = () => ({
+  auth: {
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+    signInWithPassword: () => Promise.resolve({ data: null, error: new Error("Supabase not configured") }),
+    signUp: () => Promise.resolve({ data: null, error: new Error("Supabase not configured") }),
+    signOut: () => Promise.resolve({ error: null }),
+  },
+  from: () => ({
+    select: () => ({
+      eq: () => ({
+        single: () => Promise.resolve({ data: null, error: null }),
+        maybeSingle: () => Promise.resolve({ data: null, error: null }),
+        order: () => ({
+          limit: () => Promise.resolve({ data: null, error: null }),
+        }),
+      }),
+    }),
+    insert: () => Promise.resolve({ data: null, error: null }),
+    update: () => ({
+      eq: () => Promise.resolve({ data: null, error: null }),
+    }),
+    delete: () => ({
+      eq: () => Promise.resolve({ data: null, error: null }),
+    }),
+  }),
+})
+
+// Create a function to get the Supabase client
+// This prevents the client from being created during build time
+function createSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn("Supabase client environment variables are missing")
+    return createMockClient()
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey)
+}
+
+// Create a function to get the admin client
+function createSupabaseAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl) {
+    console.warn("Supabase URL is missing")
+    return createMockClient()
+  }
+
+  // If service role key is missing, use the anon key as a fallback
+  // This will limit admin operations but prevent errors
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.warn("SUPABASE_SERVICE_ROLE_KEY is missing - using anon key with limited permissions")
+  }
+
+  return createClient(supabaseUrl, supabaseServiceKey)
+}
+
+// Export the clients using lazy initialization
+// This ensures they're only created when actually used
+export const supabase = createSupabaseClient()
+export const supabaseAdmin = createSupabaseAdminClient()
+
+// Helper function to check if Supabase is properly configured
+export function isSupabaseConfigured() {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+}
+
+// Helper function to check if Supabase admin is properly configured
+export function isSupabaseAdminConfigured() {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY)
 }

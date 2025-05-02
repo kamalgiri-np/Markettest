@@ -1,7 +1,7 @@
 "use server"
 
 import Stripe from "stripe"
-import { supabaseAdmin } from "@/lib/supabase"
+import { supabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase"
 import { cookies } from "next/headers"
 import { createServerClient } from "@supabase/ssr"
 
@@ -14,19 +14,23 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 function getSupabaseServerClient() {
   const cookieStore = cookies()
 
-  return createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
-    cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value
-      },
-      set(name: string, value: string, options: any) {
-        cookieStore.set({ name, value, ...options })
-      },
-      remove(name: string, options: any) {
-        cookieStore.set({ name, value: "", ...options })
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value
+        },
+        set(name: string, value: string, options: any) {
+          cookieStore.set({ name, value, ...options })
+        },
+        remove(name: string, options: any) {
+          cookieStore.set({ name, value: "", ...options })
+        },
       },
     },
-  })
+  )
 }
 
 export async function createStripeCheckoutSession(params: {
@@ -39,6 +43,41 @@ export async function createStripeCheckoutSession(params: {
   customerEmail?: string
 }) {
   try {
+    // Check if Supabase is configured
+    if (!isSupabaseAdminConfigured()) {
+      console.warn("Supabase admin is not configured. Using simplified checkout flow.")
+
+      // Create a simple checkout session without Supabase integration
+      const checkoutSession = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: `${params.planName} Membership (${params.interval}ly)`,
+                description: `Subscription to ${params.planName} plan, billed ${params.interval}ly`,
+              },
+              unit_amount: params.price * 100, // Convert to cents
+              recurring: {
+                interval: params.interval,
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        mode: "subscription",
+        success_url: `${params.successUrl}?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: params.cancelUrl,
+        customer_email: params.customerEmail,
+        metadata: {
+          planId: params.planId,
+        },
+      })
+
+      return { success: true, sessionId: checkoutSession.id, url: checkoutSession.url }
+    }
+
     // Get the current user
     const supabase = getSupabaseServerClient()
     const {
@@ -127,6 +166,15 @@ export async function getSubscriptionStatus(subscriptionId: string) {
 
 export async function cancelSubscription(subscriptionId: string) {
   try {
+    // Check if Supabase admin is configured
+    if (!isSupabaseAdminConfigured()) {
+      console.warn("Supabase admin is not configured. Using simplified cancellation flow.")
+
+      // Simply cancel the subscription in Stripe without database updates
+      const subscription = await stripe.subscriptions.cancel(subscriptionId)
+      return { success: true, status: subscription.status }
+    }
+
     // Get the current user
     const supabase = getSupabaseServerClient()
     const {
@@ -167,6 +215,18 @@ export async function cancelSubscription(subscriptionId: string) {
 
 export async function getCheckoutSession(sessionId: string) {
   try {
+    // Check if Supabase admin is configured
+    if (!isSupabaseAdminConfigured()) {
+      console.warn("Supabase admin is not configured. Using simplified session retrieval.")
+
+      // Simply retrieve the session from Stripe without user verification
+      const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId, {
+        expand: ["subscription"],
+      })
+
+      return { success: true, session: checkoutSession }
+    }
+
     // Get the current user
     const supabase = getSupabaseServerClient()
     const {
@@ -195,6 +255,11 @@ export async function getCheckoutSession(sessionId: string) {
 
 export async function createCustomerPortalSession() {
   try {
+    // Check if Supabase admin is configured
+    if (!isSupabaseAdminConfigured()) {
+      return { success: false, error: "Supabase admin not configured" }
+    }
+
     // Get the current user
     const supabase = getSupabaseServerClient()
     const {
@@ -219,7 +284,7 @@ export async function createCustomerPortalSession() {
     // Create a customer portal session
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: profile.stripe_customer_id,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/account`,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/account`,
     })
 
     return { success: true, url: portalSession.url }

@@ -10,8 +10,9 @@ type AuthContextType = {
   user: User | null
   session: Session | null
   isLoading: boolean
+  isConfigured: boolean
   signIn: (email: string, password: string) => Promise<{ error: any }>
-  signUp: (email: string, password: string) => Promise<{ error: any }>
+  signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>
   signOut: () => Promise<void>
 }
 
@@ -21,47 +22,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isConfigured, setIsConfigured] = useState(true)
 
   useEffect(() => {
-    // Check if Supabase URL is configured
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      console.warn("Supabase environment variables not configured. Auth functionality will be limited.")
-      setIsLoading(false)
-      return
-    }
-
-    // Get the current session
-    const getSession = async () => {
+    const checkConfiguration = async () => {
       try {
+        // Check if Supabase is configured by attempting to get the session
         const { data, error } = await supabase.auth.getSession()
-        if (error) {
-          console.error("Error getting session:", error)
+
+        if (error && error.message.includes("not configured")) {
+          setIsConfigured(false)
+          console.warn("Supabase is not properly configured. Auth functionality will be limited.")
         } else {
           setSession(data.session)
           setUser(data.session?.user ?? null)
         }
       } catch (error) {
-        console.error("Error in auth setup:", error)
+        console.error("Error checking Supabase configuration:", error)
+        setIsConfigured(false)
       } finally {
         setIsLoading(false)
       }
     }
 
-    getSession()
+    checkConfiguration()
 
-    // Listen for auth changes
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setIsLoading(false)
-    })
+    // Only set up auth listener if Supabase is configured
+    if (isConfigured) {
+      try {
+        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+          setSession(session)
+          setUser(session?.user ?? null)
+        })
 
-    return () => {
-      authListener?.subscription.unsubscribe()
+        return () => {
+          authListener?.subscription.unsubscribe()
+        }
+      } catch (error) {
+        console.error("Error setting up auth listener:", error)
+        setIsConfigured(false)
+      }
     }
-  }, [])
+  }, [isConfigured])
 
   const signIn = async (email: string, password: string) => {
+    if (!isConfigured) {
+      return { error: new Error("Supabase is not configured") }
+    }
+
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       return { error }
@@ -70,9 +78,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, fullName: string) => {
+    if (!isConfigured) {
+      return { error: new Error("Supabase is not configured") }
+    }
+
     try {
-      const { error } = await supabase.auth.signUp({ email, password })
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
+        },
+      })
       return { error }
     } catch (error) {
       return { error }
@@ -80,13 +100,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signOut = async () => {
-    await supabase.auth.signOut()
+    if (isConfigured) {
+      await supabase.auth.signOut()
+    }
   }
 
   const value = {
     user,
     session,
     isLoading,
+    isConfigured,
     signIn,
     signUp,
     signOut,

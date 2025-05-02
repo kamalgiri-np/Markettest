@@ -2,11 +2,10 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Search, TrendingUp } from "lucide-react"
+import { TrendingUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -17,6 +16,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { SearchWithSuggestions } from "@/components/search-suggestions"
 
 const categories = [
   {
@@ -68,12 +68,7 @@ export function SiteHeader() {
 
         <div className="hidden md:flex md:flex-1 md:justify-center md:px-4">
           <div className="relative w-full max-w-sm transition-all duration-300 ease-in-out hover:scale-102">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search articles..."
-              className="w-full rounded-full bg-background pl-8 md:w-[300px] lg:w-[400px] border-primary/20 focus:border-primary transition-colors duration-200"
-            />
+            <SearchWithSuggestions />
           </div>
         </div>
 
@@ -177,12 +172,7 @@ export function SiteHeader() {
             <SheetContent side="right">
               <div className="grid gap-4 py-4">
                 <div className="relative">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="search"
-                    placeholder="Search articles..."
-                    className="w-full rounded-md bg-background pl-8"
-                  />
+                  <SearchWithSuggestions />
                 </div>
                 <div className="grid gap-2">
                   {categories.map((category) => (
