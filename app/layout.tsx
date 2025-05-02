@@ -9,6 +9,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { FloatingCta } from "@/components/floating-cta"
 import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from "@/components/auth-provider"
+import { LiveChatWidget } from "@/components/live-chat/chat-widget"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -36,6 +37,8 @@ export default function RootLayout({
             <SiteFooter />
             <FloatingCta />
             <Toaster />
+            {/* Live Chat Widget */}
+            <LiveChatWidget />
           </AuthProvider>
         </ThemeProvider>
       </body>
