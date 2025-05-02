@@ -4,8 +4,6 @@ import { ArrowRight, BookOpen, BarChart3, Award, BookMarked, Briefcase } from "l
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { NewsletterSubscription } from "@/components/newsletter-subscription"
 import { FeaturedArticle } from "@/components/featured-article"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -15,7 +13,6 @@ import { TestimonialCarousel } from "@/components/testimonial-carousel"
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader />
       <main className="flex-1">
         <AnimatedSection
           animation="fade-in"
@@ -982,7 +979,6 @@ export default function Home() {
           </div>
         </AnimatedSection>
       </main>
-      <SiteFooter />
     </div>
   )
 }
