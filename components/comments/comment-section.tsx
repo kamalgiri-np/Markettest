@@ -5,6 +5,7 @@ import { MessageSquare } from "lucide-react"
 
 import { CommentForm } from "@/components/comments/comment-form"
 import { CommentList } from "@/components/comments/comment-list"
+import { useToast } from "@/hooks/use-toast"
 
 interface Comment {
   id: string
@@ -17,71 +18,78 @@ interface Comment {
   replies?: Comment[]
 }
 
+// Mock comments data
+const mockComments: Comment[] = [
+  {
+    id: "1",
+    author: {
+      name: "Alex Johnson",
+      avatar: "/placeholder.svg?height=40&width=40",
+    },
+    content:
+      "This article provides excellent insights into economic uncertainty. I particularly appreciated the section on scenario planning.",
+    date: "2023-05-15T10:30:00Z",
+    replies: [
+      {
+        id: "1-1",
+        author: {
+          name: "Sarah Williams",
+          avatar: "/placeholder.svg?height=40&width=40",
+        },
+        content:
+          "I agree! The scenario planning approach has been invaluable for our organization during recent market fluctuations.",
+        date: "2023-05-15T11:45:00Z",
+      },
+    ],
+  },
+  {
+    id: "2",
+    author: {
+      name: "Michael Chen",
+      avatar: "/placeholder.svg?height=40&width=40",
+    },
+    content:
+      "As someone working in financial services, I found the section on building financial resilience particularly relevant. Would love to see a follow-up article diving deeper into stress-testing financial models.",
+    date: "2023-05-14T15:20:00Z",
+  },
+]
+
 interface CommentSectionProps {
   postId: string
   postSlug: string
 }
 
 export function CommentSection({ postId, postSlug }: CommentSectionProps) {
-  // In a real app, this would be fetched from an API
-  const [comments, setComments] = useState<Comment[]>([
-    {
-      id: "1",
-      author: {
-        name: "Alex Johnson",
-        avatar: "/placeholder.svg?height=40&width=40",
-      },
-      content:
-        "This article provides excellent insights on remote leadership. I've implemented several of these strategies with my team and seen significant improvements in communication and productivity.",
-      date: "2 days ago",
-      replies: [
-        {
-          id: "1-1",
-          author: {
-            name: "Sarah Johnson",
-            avatar: "/placeholder.svg?height=40&width=40",
-          },
-          content:
-            "Thank you for your feedback, Alex! I'm glad to hear these strategies have been helpful for your team.",
-          date: "1 day ago",
-        },
-      ],
-    },
-    {
-      id: "2",
-      author: {
-        name: "Michael Chen",
-        avatar: "/placeholder.svg?height=40&width=40",
-      },
-      content:
-        "I particularly appreciated the section on creating intentional social connections. This is often overlooked but so crucial for remote team cohesion.",
-      date: "3 days ago",
-    },
-  ])
+  const [comments, setComments] = useState<Comment[]>(mockComments)
+  const { toast } = useToast()
 
-  const addComment = (content: string) => {
+  const handleAddComment = (content: string) => {
     const newComment: Comment = {
       id: `comment-${Date.now()}`,
       author: {
-        name: "You", // In a real app, this would be the logged-in user
+        name: "Current User", // In a real app, this would come from authentication
         avatar: "/placeholder.svg?height=40&width=40",
       },
       content,
-      date: "Just now",
+      date: new Date().toISOString(),
     }
 
-    setComments([newComment, ...comments])
+    setComments([...comments, newComment])
+    toast({
+      title: "Comment added",
+      description: "Your comment has been posted successfully.",
+    })
   }
 
-  const addReply = (commentId: string, content: string) => {
+  const handleAddReply = (commentId: string, content: string) => {
     const newReply: Comment = {
       id: `reply-${Date.now()}`,
       author: {
-        name: "You", // In a real app, this would be the logged-in user
+        name: "Current User", // In a real app, this would come from authentication
         avatar: "/placeholder.svg?height=40&width=40",
       },
       content,
-      date: "Just now",
+      date: new Date().toISOString(),
     }
 
     const updatedComments = comments.map((comment) => {
@@ -95,20 +103,26 @@ export function CommentSection({ postId, postSlug }: CommentSectionProps) {
     })
 
     setComments(updatedComments)
+    toast({
+      title: "Reply added",
+      description: "Your reply has been posted successfully.",
+    })
   }
 
   return (
-    <div>
-      <div className="flex items-center gap-2 mb-6">
+    <div className="space-y-8">
+      <div className="flex items-center gap-2">
         <MessageSquare className="h-5 w-5" />
-        <h2 className="text-xl font-bold">Comments ({comments.length})</h2>
+        <h2 className="text-2xl font-bold">Comments ({comments.length})</h2>
       </div>
 
-      <CommentForm onSubmit={addComment} placeholder="Share your thoughts..." />
+      <CommentForm onSubmit={handleAddComment} />
 
-      <div className="mt-8">
-        <CommentList comments={comments} onReply={addReply} />
-      </div>
+      {comments.length > 0 ? (
+        <CommentList comments={comments} onReply={handleAddReply} />
+      ) : (
+        <p className="text-center text-muted-foreground py-8">Be the first to comment on this article!</p>
+      )}
     </div>
   )
 }

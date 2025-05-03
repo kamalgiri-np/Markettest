@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { TrendingUp } from "lucide-react"
+import { TrendingUp, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -15,8 +15,9 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { SearchWithSuggestions } from "@/components/search-suggestions"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const categories = [
   {
@@ -73,6 +74,7 @@ export function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <NavigationMenu className="hidden md:flex">
             <NavigationMenuList className="space-x-1">
               {categories.map((category) => (
@@ -169,38 +171,111 @@ export function SiteHeader() {
                 </svg>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right">
-              <div className="grid gap-4 py-4">
+            <SheetContent side="right" className="w-[80%] max-w-sm">
+              <div className="grid gap-6 py-6">
+                <div className="flex items-center justify-between">
+                  <Link
+                    href="/"
+                    className="flex items-center space-x-2"
+                    onClick={() => document.querySelector("[data-radix-collection-item]")?.click()}
+                  >
+                    <TrendingUp className="h-6 w-6 text-primary" />
+                    <span className="text-xl font-bold">InsightfulGrowth</span>
+                  </Link>
+                  <SheetClose className="rounded-full opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                    <X className="h-4 w-4" />
+                    <span className="sr-only">Close</span>
+                  </SheetClose>
+                </div>
+
                 <div className="relative">
                   <SearchWithSuggestions />
                 </div>
-                <div className="grid gap-2">
-                  {categories.map((category) => (
-                    <div key={category.title} className="grid gap-1">
-                      <Link href={category.href} className="text-base font-medium hover:text-primary">
-                        {category.title}
-                      </Link>
-                      <div className="grid gap-1 pl-4">
-                        {category.subcategories.map((subcategory) => (
-                          <Link
-                            key={subcategory.title}
-                            href={subcategory.href}
-                            className="text-sm text-muted-foreground hover:text-primary"
-                          >
-                            {subcategory.title}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                  <Link href="/about" className="text-base font-medium hover:text-primary">
-                    About
-                  </Link>
-                  <Link href="/contact" className="text-base font-medium hover:text-primary">
-                    Contact
-                  </Link>
+                <div className="flex justify-center py-2">
+                  <ThemeToggle />
                 </div>
-                <Button className="w-full">Subscribe</Button>
+
+                <nav className="grid gap-5">
+                  <div className="grid gap-3">
+                    <h3 className="text-lg font-semibold">Categories</h3>
+                    {categories.map((category) => (
+                      <div key={category.title} className="grid gap-2">
+                        <Link
+                          href={category.href}
+                          className="text-base font-medium hover:text-primary transition-colors"
+                          onClick={() => document.querySelector("[data-radix-collection-item]")?.click()}
+                        >
+                          {category.title}
+                        </Link>
+                        <div className="grid grid-cols-2 gap-1 pl-2">
+                          {category.subcategories.map((subcategory) => (
+                            <Link
+                              key={subcategory.title}
+                              href={subcategory.href}
+                              className="text-sm text-muted-foreground hover:text-primary transition-colors py-1"
+                              onClick={() => document.querySelector("[data-radix-collection-item]")?.click()}
+                            >
+                              {subcategory.title}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="grid gap-2">
+                    <h3 className="text-lg font-semibold">Pages</h3>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link
+                        href="/about"
+                        className="text-base font-medium hover:text-primary transition-colors py-1"
+                        onClick={() => document.querySelector("[data-radix-collection-item]")?.click()}
+                      >
+                        About
+                      </Link>
+                      <Link
+                        href="/contact"
+                        className="text-base font-medium hover:text-primary transition-colors py-1"
+                        onClick={() => document.querySelector("[data-radix-collection-item]")?.click()}
+                      >
+                        Contact
+                      </Link>
+                      <Link
+                        href="/resources"
+                        className="text-base font-medium hover:text-primary transition-colors py-1"
+                        onClick={() => document.querySelector("[data-radix-collection-item]")?.click()}
+                      >
+                        Resources
+                      </Link>
+                      <Link
+                        href="/blog"
+                        className="text-base font-medium hover:text-primary transition-colors py-1"
+                        onClick={() => document.querySelector("[data-radix-collection-item]")?.click()}
+                      >
+                        Blog
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-2 pt-2">
+                    <Button className="w-full" asChild>
+                      <Link
+                        href="/login"
+                        onClick={() => document.querySelector("[data-radix-collection-item]")?.click()}
+                      >
+                        Sign In
+                      </Link>
+                    </Button>
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link
+                        href="/register"
+                        onClick={() => document.querySelector("[data-radix-collection-item]")?.click()}
+                      >
+                        Register
+                      </Link>
+                    </Button>
+                  </div>
+                </nav>
               </div>
             </SheetContent>
           </Sheet>
