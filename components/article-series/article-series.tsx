@@ -16,7 +16,7 @@ export interface ArticleSeriesProps {
   currentArticleSlug?: string
 }
 
-export function ArticleSeries({ title, description, articles, currentArticleSlug }: ArticleSeriesProps) {
+export function ArticleSeries({ title, description, articles = [], currentArticleSlug }: ArticleSeriesProps) {
   // Calculate progress
   const totalArticles = articles.length
   const completedArticles = articles.filter(
@@ -47,7 +47,7 @@ export function ArticleSeries({ title, description, articles, currentArticleSlug
         {/* Articles list */}
         <ul className="space-y-2">
           {articles.map((article, index) => (
-            <li key={article.id} className="flex items-center">
+            <li key={article.id || index} className="flex items-center">
               <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center mr-2">
                 {article.isCompleted ? (
                   <svg

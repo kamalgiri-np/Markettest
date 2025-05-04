@@ -13,8 +13,7 @@ import { CommentSection } from "@/components/comments/comment-section"
 import { ArticleStyles } from "@/components/ui/article-styles"
 import { ArticleCallout } from "@/components/ui/article-callout"
 import { ArticleToc } from "@/components/ui/article-toc"
-import { ArticleSeries } from "@/components/article-series"
-import type { ArticleSeries as ArticleSeriesType } from "@/types/article-series"
+import { ArticleSeries } from "@/components/article-series/article-series"
 
 // This would typically come from a CMS or database
 const articles = [
@@ -299,7 +298,12 @@ export default function ArticlePage({ params }: Props) {
             <div className="w-full lg:w-2/3">
               {article.series && (
                 <div className="mb-8">
-                  <ArticleSeries series={article.series as ArticleSeriesType} />
+                  <ArticleSeries
+                    title={article.series.title}
+                    description={article.series.description}
+                    articles={article.series.articles}
+                    currentArticleSlug={article.slug}
+                  />
                 </div>
               )}
 

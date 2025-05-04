@@ -33,75 +33,73 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-6 w-6"
-            >
-              <path d="M3 3v18h18" />
-              <path d="m19 9-5 5-4-4-3 3" />
-            </svg>
-            <span className="text-xl font-bold">InsightfulGrowth</span>
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex h-16 items-center justify-between px-4">
+        <Link href="/" className="flex items-center space-x-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-6 w-6"
+          >
+            <path d="M3 3v18h18" />
+            <path d="m19 9-5 5-4-4-3 3" />
+          </svg>
+          <span className="text-xl font-bold">InsightfulGrowth</span>
+        </Link>
+        <nav className="hidden md:flex gap-6">
+          <Link
+            href="/category/economics"
+            className={`text-sm font-medium hover:text-primary ${params.slug === "economics" ? "text-primary" : ""}`}
+          >
+            Economics
           </Link>
-          <nav className="hidden md:flex gap-6">
-            <Link
-              href="/category/economics"
-              className={`text-sm font-medium hover:text-primary ${params.slug === "economics" ? "text-primary" : ""}`}
-            >
-              Economics
-            </Link>
-            <Link
-              href="/category/leadership"
-              className={`text-sm font-medium hover:text-primary ${params.slug === "leadership" ? "text-primary" : ""}`}
-            >
-              Leadership
-            </Link>
-            <Link
-              href="/category/career"
-              className={`text-sm font-medium hover:text-primary ${params.slug === "career" ? "text-primary" : ""}`}
-            >
-              Career Development
-            </Link>
-            <Link href="/about" className="text-sm font-medium hover:text-primary">
-              About
-            </Link>
-            <Link href="/contact" className="text-sm font-medium hover:text-primary">
-              Contact
-            </Link>
-          </nav>
-          <Button variant="outline" size="sm" className="hidden md:flex">
-            Subscribe
-          </Button>
-          <Button variant="outline" size="icon" className="md:hidden">
-            <span className="sr-only">Toggle menu</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-6 w-6"
-            >
-              <line x1="4" x2="20" y1="12" y2="12" />
-              <line x1="4" x2="20" y1="6" y2="6" />
-              <line x1="4" x2="20" y1="18" y2="18" />
-            </svg>
-          </Button>
-        </div>
+          <Link
+            href="/category/leadership"
+            className={`text-sm font-medium hover:text-primary ${params.slug === "leadership" ? "text-primary" : ""}`}
+          >
+            Leadership
+          </Link>
+          <Link
+            href="/category/career"
+            className={`text-sm font-medium hover:text-primary ${params.slug === "career" ? "text-primary" : ""}`}
+          >
+            Career Development
+          </Link>
+          <Link href="/about" className="text-sm font-medium hover:text-primary">
+            About
+          </Link>
+          <Link href="/contact" className="text-sm font-medium hover:text-primary">
+            Contact
+          </Link>
+        </nav>
+        <Button variant="outline" size="sm" className="hidden md:flex">
+          Subscribe
+        </Button>
+        <Button variant="outline" size="icon" className="md:hidden">
+          <span className="sr-only">Toggle menu</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-6 w-6"
+          >
+            <line x1="4" x2="20" y1="12" y2="12" />
+            <line x1="4" x2="20" y1="6" y2="6" />
+            <line x1="4" x2="20" y1="18" y2="18" />
+          </svg>
+        </Button>
       </header>
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
