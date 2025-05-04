@@ -7,32 +7,23 @@
     /* Base colors */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-
     --primary: 200 98% 39%;
     --primary-foreground: 210 40% 98%;
-
     --secondary: 199 89% 48%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 200 98% 39%;
-
     --radius: 0.5rem;
 
     /* Chart colors */
@@ -44,17 +35,13 @@
     /* Theme-specific styles */
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-
     --highlight-bg: 210 40% 96.1%;
     --highlight-fg: 222.2 84% 4.9%;
-
     --gradient-start: 199 89% 48%;
     --gradient-end: 200 98% 39%;
-
     --surface-1: 0 0% 100%;
     --surface-2: 210 40% 98%;
     --surface-3: 210 40% 96.1%;
-
     --glow-color: rgba(0, 149, 255, 0.35);
 
     /* Article specific colors */
@@ -81,55 +68,28 @@
     --content-spacing-x: 1rem;
     --content-spacing-x-sm: 0.5rem;
     --content-spacing-x-lg: 1.5rem;
-
-    @media (min-width: 768px) {
-      --section-spacing-y: 5rem;
-      --section-spacing-y-sm: 2.5rem;
-      --section-spacing-y-lg: 8rem;
-      --content-spacing-x: 1.5rem;
-      --content-spacing-x-sm: 0.75rem;
-      --content-spacing-x-lg: 2rem;
-    }
-
-    @media (min-width: 1024px) {
-      --section-spacing-y: 6rem;
-      --section-spacing-y-sm: 3rem;
-      --section-spacing-y-lg: 10rem;
-      --content-spacing-x: 2rem;
-      --content-spacing-x-sm: 1rem;
-      --content-spacing-x-lg: 3rem;
-    }
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
     --primary: 199 89% 48%;
     --primary-foreground: 222.2 47.4% 11.2%;
-
     --secondary: 200 98% 39%;
     --secondary-foreground: 210 40% 98%;
-
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 199 89% 48%;
-
     --color-chart-1: 199 89% 48%;
     --color-chart-2: 160 64% 40%;
     --color-chart-3: 262 83% 65%;
@@ -138,17 +98,13 @@
     /* Theme-specific styles for dark mode */
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
     --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.7), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
-
     --highlight-bg: 217.2 32.6% 17.5%;
     --highlight-fg: 210 40% 98%;
-
     --gradient-start: 199 89% 48%;
     --gradient-end: 200 98% 39%;
-
     --surface-1: 222.2 84% 4.9%;
     --surface-2: 223 47% 11%;
     --surface-3: 224 71% 4%;
-
     --glow-color: rgba(0, 149, 255, 0.2);
 
     /* Article specific colors for dark mode */
@@ -406,7 +362,7 @@
   }
 
   .article-content blockquote::before {
-    content: """;
+    content: '"';
     position: absolute;
     top: -0.5rem;
     left: 0.5rem;
@@ -416,8 +372,7 @@
     line-height: 1;
   }
 
-  /* Article code blocks */ locks * 
-  /
+  /* Article code blocks */
   .article-content pre {
     @apply my-6 overflow-x-auto rounded-lg p-4 text-sm;
     background-color: hsl(var(--article-code-bg));

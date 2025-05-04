@@ -13,6 +13,8 @@ import { CommentSection } from "@/components/comments/comment-section"
 import { ArticleStyles } from "@/components/ui/article-styles"
 import { ArticleCallout } from "@/components/ui/article-callout"
 import { ArticleToc } from "@/components/ui/article-toc"
+import { ArticleSeries } from "@/components/article-series"
+import type { ArticleSeries as ArticleSeriesType } from "@/types/article-series"
 
 // This would typically come from a CMS or database
 const articles = [
@@ -137,6 +139,64 @@ const articles = [
     readTime: "12 min read",
     slug: "navigating-economic-uncertainty",
     relatedArticles: ["2", "3", "5"],
+    series: {
+      id: "business-resilience",
+      title: "Building Business Resilience",
+      description:
+        "A comprehensive guide to building resilient businesses that can withstand economic uncertainty and market disruptions.",
+      coverImage: "/placeholder.svg?height=600&width=1200",
+      totalArticles: 5,
+      progress: 20,
+      tags: ["Business Strategy", "Risk Management", "Leadership"],
+      articles: [
+        {
+          id: "1",
+          title: "Navigating Economic Uncertainty: Strategies for Business Leaders",
+          slug: "navigating-economic-uncertainty",
+          excerpt:
+            "Learn how to guide your organization through volatile economic conditions with strategic planning and risk management.",
+          publishedAt: "May 10, 2023",
+          readingTime: "12 min read",
+          isCompleted: true,
+          isCurrent: true,
+        },
+        {
+          id: "2",
+          title: "Building Adaptive Teams for Uncertain Times",
+          slug: "building-adaptive-teams",
+          excerpt:
+            "Discover how to develop teams that can quickly adapt to changing market conditions and business requirements.",
+          publishedAt: "May 17, 2023",
+          readingTime: "10 min read",
+        },
+        {
+          id: "3",
+          title: "Financial Strategies for Business Continuity",
+          slug: "financial-strategies-business-continuity",
+          excerpt: "Learn essential financial planning techniques to ensure your business can weather economic storms.",
+          publishedAt: "May 24, 2023",
+          readingTime: "14 min read",
+        },
+        {
+          id: "4",
+          title: "Supply Chain Resilience in a Volatile World",
+          slug: "supply-chain-resilience",
+          excerpt:
+            "Strategies for building robust supply chains that can withstand disruptions and adapt to changing conditions.",
+          publishedAt: "May 31, 2023",
+          readingTime: "11 min read",
+        },
+        {
+          id: "5",
+          title: "Leading Through Crisis: Decision-Making Frameworks",
+          slug: "leading-through-crisis",
+          excerpt:
+            "Effective decision-making frameworks for business leaders navigating periods of extreme uncertainty.",
+          publishedAt: "June 7, 2023",
+          readingTime: "15 min read",
+        },
+      ],
+    },
   },
   // Additional articles would be here
 ]
@@ -237,6 +297,12 @@ export default function ArticlePage({ params }: Props) {
 
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="w-full lg:w-2/3">
+              {article.series && (
+                <div className="mb-8">
+                  <ArticleSeries series={article.series as ArticleSeriesType} />
+                </div>
+              )}
+
               <div className="flex justify-between items-center mb-6">
                 <div className="flex gap-2 flex-wrap">
                   {article.tags.map((tag) => (
