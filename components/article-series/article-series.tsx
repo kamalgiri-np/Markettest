@@ -1,86 +1,84 @@
-"use client"
+import Link from "next/link"
+import { Card } from "@/components/ui/card"
 
-import { cn } from "@/lib/utils"
-import type { ArticleSeries as ArticleSeriesType } from "@/types/article-series"
-import { ArticleSeriesProgress } from "./article-series-progress"
-import { ArticleSeriesNavigation } from "./article-series-navigation"
-import { ChevronDown, ChevronUp, BookOpen } from "lucide-react"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-
-interface ArticleSeriesProps {
-  series: ArticleSeriesType
-  className?: string
-  expanded?: boolean
-  showProgress?: boolean
-  variant?: "default" | "compact" | "inline"
+export interface ArticleSeriesItem {
+  id: string
+  title: string
+  slug: string
+  isCurrent?: boolean
+  isCompleted?: boolean
 }
 
-export function ArticleSeries({
-  series,
-  className,
-  expanded = false,
-  showProgress = true,
-  variant = "default",
-}: ArticleSeriesProps) {
-  const [isExpanded, setIsExpanded] = useState(expanded)
-  const currentIndex = series.articles.findIndex((article) => article.isCurrent)
-  const progress =
-    series.progress || (currentIndex >= 0 ? Math.round(((currentIndex + 1) / series.totalArticles) * 100) : 0)
+export interface ArticleSeriesProps {
+  title: string
+  description?: string
+  articles: ArticleSeriesItem[]
+  currentArticleSlug?: string
+}
+
+export function ArticleSeries({ title, description, articles, currentArticleSlug }: ArticleSeriesProps) {
+  // Calculate progress
+  const totalArticles = articles.length
+  const completedArticles = articles.filter(
+    (article) => article.isCompleted || (currentArticleSlug && article.slug < currentArticleSlug),
+  ).length
+  const progress = totalArticles > 0 ? (completedArticles / totalArticles) * 100 : 0
 
   return (
-    <div
-      className={cn(
-        "rounded-lg border border-border bg-card text-card-foreground shadow-sm",
-        variant === "compact" && "p-4",
-        variant === "default" && "p-5",
-        variant === "inline" && "border-l-4 border-l-primary p-4",
-        className,
-      )}
-    >
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <BookOpen className="h-5 w-5" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-lg">Series: {series.title}</h3>
-            {variant !== "compact" && (
-              <p className="text-sm text-muted-foreground">
-                {currentIndex + 1} of {series.totalArticles} articles
-              </p>
-            )}
-          </div>
+    <Card className="p-6 mb-8">
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-xl font-bold">Series: {title}</h3>
+          {description && <p className="text-muted-foreground mt-1">{description}</p>}
         </div>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setIsExpanded(!isExpanded)}>
-          {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          <span className="sr-only">{isExpanded ? "Collapse" : "Expand"} series</span>
-        </Button>
+
+        {/* Progress bar */}
+        <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
+          <div
+            className="bg-primary h-full rounded-full"
+            style={{ width: `${progress}%` }}
+            role="progressbar"
+            aria-valuenow={progress}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          />
+        </div>
+
+        {/* Articles list */}
+        <ul className="space-y-2">
+          {articles.map((article, index) => (
+            <li key={article.id} className="flex items-center">
+              <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center mr-2">
+                {article.isCompleted ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-4 h-4 text-primary"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                ) : (
+                  <span className="w-5 h-5 rounded-full border flex items-center justify-center text-xs">
+                    {index + 1}
+                  </span>
+                )}
+              </div>
+              {article.isCurrent ? (
+                <span className="font-medium">{article.title}</span>
+              ) : (
+                <Link href={`/article/${article.slug}`} className="hover:text-primary transition-colors">
+                  {article.title}
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
-
-      {showProgress && variant !== "compact" && (
-        <div className="mt-4">
-          <ArticleSeriesProgress progress={progress} />
-        </div>
-      )}
-
-      {(isExpanded || variant === "compact") && (
-        <div className={cn("mt-4", variant === "compact" ? "mt-3" : "mt-5")}>
-          <ArticleSeriesNavigation articles={series.articles} variant={variant === "compact" ? "compact" : "default"} />
-        </div>
-      )}
-
-      {!isExpanded && variant === "default" && (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="mt-2 w-full justify-center text-primary"
-          onClick={() => setIsExpanded(true)}
-        >
-          Show all articles in this series
-          <ChevronDown className="ml-1 h-4 w-4" />
-        </Button>
-      )}
-    </div>
+    </Card>
   )
 }
