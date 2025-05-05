@@ -18,6 +18,7 @@ interface BlogAuthorProps {
   author: Author
 }
 
+// Verify the BlogAuthor export
 export function BlogAuthor({ author }: BlogAuthorProps) {
   return (
     <Card>
