@@ -53,24 +53,18 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // New brand colors
         brand: {
-          50: "#f0f9ff",
-          100: "#e0f2fe",
-          200: "#bae6fd",
-          300: "#7dd3fc",
-          400: "#38bdf8",
-          500: "#0ea5e9",
-          600: "#0284c7",
-          700: "#0369a1",
-          800: "#075985",
-          900: "#0c4a6e",
-        },
-        chart: {
-          1: "var(--color-chart-1)",
-          2: "var(--color-chart-2)",
-          3: "var(--color-chart-3)",
-          4: "var(--color-chart-4)",
+          50: "hsl(var(--brand-50))",
+          100: "hsl(var(--brand-100))",
+          200: "hsl(var(--brand-200))",
+          300: "hsl(var(--brand-300))",
+          400: "hsl(var(--brand-400))",
+          500: "hsl(var(--brand-500))",
+          600: "hsl(var(--brand-600))",
+          700: "hsl(var(--brand-700))",
+          800: "hsl(var(--brand-800))",
+          900: "hsl(var(--brand-900))",
+          950: "hsl(var(--brand-950))",
         },
       },
       borderRadius: {
@@ -95,40 +89,72 @@ const config = {
       typography: {
         DEFAULT: {
           css: {
-            maxWidth: "65ch",
+            maxWidth: "100%",
             color: "var(--tw-prose-body)",
-            p: {
-              marginTop: "1.25em",
-              marginBottom: "1.25em",
+            '[class~="lead"]': {
+              color: "var(--tw-prose-lead)",
             },
             a: {
               color: "var(--tw-prose-links)",
               textDecoration: "underline",
               fontWeight: "500",
             },
-            h1: {
-              color: "var(--tw-prose-headings)",
-              fontWeight: "700",
-              fontSize: "2.25em",
-              marginTop: "0",
-              marginBottom: "0.8888889em",
-              lineHeight: "1.1111111",
-            },
-            h2: {
-              color: "var(--tw-prose-headings)",
-              fontWeight: "700",
-              fontSize: "1.5em",
-              marginTop: "2em",
-              marginBottom: "1em",
-              lineHeight: "1.3333333",
-            },
-            h3: {
-              color: "var(--tw-prose-headings)",
+            strong: {
+              color: "var(--tw-prose-bold)",
               fontWeight: "600",
-              fontSize: "1.25em",
-              marginTop: "1.6em",
-              marginBottom: "0.6em",
-              lineHeight: "1.6",
+            },
+            "a strong": {
+              color: "inherit",
+            },
+            "blockquote strong": {
+              color: "inherit",
+            },
+            "thead th strong": {
+              color: "inherit",
+            },
+            ol: {
+              listStyleType: "decimal",
+            },
+            'ol[type="A"]': {
+              listStyleType: "upper-alpha",
+            },
+            'ol[type="a"]': {
+              listStyleType: "lower-alpha",
+            },
+            'ol[type="A" s]': {
+              listStyleType: "upper-alpha",
+            },
+            'ol[type="a" s]': {
+              listStyleType: "lower-alpha",
+            },
+            'ol[type="I"]': {
+              listStyleType: "upper-roman",
+            },
+            'ol[type="i"]': {
+              listStyleType: "lower-roman",
+            },
+            'ol[type="I" s]': {
+              listStyleType: "upper-roman",
+            },
+            'ol[type="i" s]': {
+              listStyleType: "lower-roman",
+            },
+            'ol[type="1"]': {
+              listStyleType: "decimal",
+            },
+            ul: {
+              listStyleType: "disc",
+            },
+            "ol > li::marker": {
+              fontWeight: "400",
+              color: "var(--tw-prose-counters)",
+            },
+            "ul > li::marker": {
+              color: "var(--tw-prose-bullets)",
+            },
+            hr: {
+              borderColor: "var(--tw-prose-hr)",
+              borderTopWidth: 1,
             },
             blockquote: {
               fontWeight: "500",
@@ -136,18 +162,142 @@ const config = {
               color: "var(--tw-prose-quotes)",
               borderLeftWidth: "0.25rem",
               borderLeftColor: "var(--tw-prose-quote-borders)",
-              paddingLeft: "1em",
+              quotes: '"\\201C""\\201D""\\2018""\\2019"',
+            },
+            "blockquote p:first-of-type::before": {
+              content: "open-quote",
+            },
+            "blockquote p:last-of-type::after": {
+              content: "close-quote",
+            },
+            h1: {
+              color: "var(--tw-prose-headings)",
+              fontWeight: "800",
+            },
+            "h1 strong": {
+              fontWeight: "900",
+              color: "inherit",
+            },
+            h2: {
+              color: "var(--tw-prose-headings)",
+              fontWeight: "700",
+            },
+            "h2 strong": {
+              fontWeight: "800",
+              color: "inherit",
+            },
+            h3: {
+              color: "var(--tw-prose-headings)",
+              fontWeight: "600",
+            },
+            "h3 strong": {
+              fontWeight: "700",
+              color: "inherit",
+            },
+            h4: {
+              color: "var(--tw-prose-headings)",
+              fontWeight: "600",
+            },
+            "h4 strong": {
+              fontWeight: "700",
+              color: "inherit",
+            },
+            // Code blocks
+            pre: {
+              color: "var(--tw-prose-pre-code)",
+              backgroundColor: "var(--tw-prose-pre-bg)",
+              overflowX: "auto",
+              fontWeight: "400",
+            },
+            "pre code": {
+              backgroundColor: "transparent",
+              borderWidth: "0",
+              borderRadius: "0",
+              padding: "0",
+              fontWeight: "inherit",
+              color: "inherit",
+              fontSize: "inherit",
+              fontFamily: "inherit",
+              lineHeight: "inherit",
+            },
+            code: {
+              color: "var(--tw-prose-code)",
+              fontWeight: "600",
+              fontSize: "0.875em",
+            },
+            "code::before": {
+              content: '""',
+            },
+            "code::after": {
+              content: '""',
+            },
+            "a code": {
+              color: "inherit",
+            },
+            "h1 code": {
+              color: "inherit",
+            },
+            "h2 code": {
+              color: "inherit",
+            },
+            "h3 code": {
+              color: "inherit",
+            },
+            "h4 code": {
+              color: "inherit",
+            },
+            "blockquote code": {
+              color: "inherit",
+            },
+            "thead th code": {
+              color: "inherit",
+            },
+            img: {
+              marginTop: 0,
+              marginBottom: 0,
+            },
+            // Fixes image size issues
+            "picture > img": {
+              marginTop: 0,
+              marginBottom: 0,
+            },
+            video: {
+              marginTop: 0,
+              marginBottom: 0,
+            },
+            svg: {
+              marginTop: 0,
+              marginBottom: 0,
+            },
+            // Table styles
+            table: {
+              width: "100%",
+              tableLayout: "auto",
+              textAlign: "left",
+              marginTop: "2em",
+              marginBottom: "2em",
+            },
+            thead: {
+              borderBottomWidth: "1px",
+              borderBottomColor: "var(--tw-prose-th-borders)",
+            },
+            "thead th": {
+              color: "var(--tw-prose-headings)",
+              fontWeight: "600",
+              verticalAlign: "bottom",
+            },
+            "tbody tr": {
+              borderBottomWidth: "1px",
+              borderBottomColor: "var(--tw-prose-td-borders)",
+            },
+            "tbody tr:last-child": {
+              borderBottomWidth: "0",
+            },
+            "tbody td": {
+              verticalAlign: "baseline",
             },
           },
         },
-      },
-      spacing: {
-        "section-y": "var(--section-spacing-y, 4rem)",
-        "section-y-sm": "var(--section-spacing-y-sm, 2rem)",
-        "section-y-lg": "var(--section-spacing-y-lg, 6rem)",
-        "content-x": "var(--content-spacing-x, 1rem)",
-        "content-x-sm": "var(--content-spacing-x-sm, 0.5rem)",
-        "content-x-lg": "var(--content-spacing-x-lg, 1.5rem)",
       },
     },
   },

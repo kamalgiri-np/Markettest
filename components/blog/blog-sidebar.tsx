@@ -1,180 +1,96 @@
-"use client"
-
-import type React from "react"
-
-import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
-import { Search, Tag, ArrowRight } from "lucide-react"
-
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-
-// Mock data for popular posts
-const popularPosts = [
-  {
-    id: "1",
-    title: "10 Strategies for Effective Leadership in Remote Teams",
-    image: "/placeholder.svg?height=80&width=120",
-    date: "May 15, 2023",
-    slug: "strategies-for-remote-leadership",
-  },
-  {
-    id: "2",
-    title: "Economic Outlook 2023: Navigating Uncertainty in Global Markets",
-    image: "/placeholder.svg?height=80&width=120",
-    date: "May 10, 2023",
-    slug: "economic-outlook-2023",
-  },
-  {
-    id: "3",
-    title: "Building a Personal Brand That Stands Out in a Competitive Market",
-    image: "/placeholder.svg?height=80&width=120",
-    date: "May 5, 2023",
-    slug: "personal-brand-competitive-market",
-  },
-]
-
-// Mock data for categories
-const categories = [
-  { name: "Leadership", count: 24, slug: "leadership" },
-  { name: "Economics", count: 18, slug: "economics" },
-  { name: "Career Development", count: 15, slug: "career-development" },
-  { name: "Technology", count: 12, slug: "technology" },
-  { name: "Sustainability", count: 9, slug: "sustainability" },
-  { name: "Business Skills", count: 21, slug: "business-skills" },
-]
-
-// Mock data for tags
-const tags = [
-  "Remote Work",
-  "Leadership",
-  "Financial Planning",
-  "Career Growth",
-  "Artificial Intelligence",
-  "Sustainability",
-  "Communication",
-  "Innovation",
-  "Market Analysis",
-  "Team Management",
-]
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function BlogSidebar() {
-  const [searchQuery, setSearchQuery] = useState("")
+  const categories = [
+    { name: "Business Strategy", slug: "business-strategy", count: 12 },
+    { name: "Leadership", slug: "leadership", count: 8 },
+    { name: "Digital Marketing", slug: "digital-marketing", count: 15 },
+    { name: "Technology", slug: "technology", count: 10 },
+    { name: "Sustainability", slug: "sustainability", count: 6 },
+  ]
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    // In a real application, this would redirect to search results
-    console.log("Searching for:", searchQuery)
-  }
+  const popularPosts = [
+    {
+      title: "10 Leadership Lessons from Successful CEOs",
+      slug: "leadership-lessons-successful-ceos",
+    },
+    {
+      title: "The Future of Remote Work: Trends to Watch",
+      slug: "future-remote-work-trends",
+    },
+    {
+      title: "Building a Sustainable Business Model",
+      slug: "building-sustainable-business-model",
+    },
+  ]
 
   return (
-    <div className="space-y-8 sticky top-24">
-      <Card>
-        <CardHeader>
-          <CardTitle>Search</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSearch} className="flex gap-2">
-            <Input
-              placeholder="Search articles..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1"
-            />
-            <Button type="submit" size="icon">
-              <Search className="h-4 w-4" />
-              <span className="sr-only">Search</span>
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Popular Articles</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {popularPosts.map((post) => (
-              <div key={post.id} className="flex gap-4">
-                <Link href={`/blog/${post.slug}`} className="shrink-0">
-                  <Image
-                    src={post.image || "/placeholder.svg"}
-                    alt={post.title}
-                    width={80}
-                    height={60}
-                    className="rounded-md object-cover"
-                  />
-                </Link>
-                <div className="space-y-1">
-                  <h4 className="font-medium line-clamp-2 text-sm">
-                    <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
-                      {post.title}
-                    </Link>
-                  </h4>
-                  <p className="text-xs text-muted-foreground">{post.date}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Categories</CardTitle>
+          <CardDescription>Browse articles by category</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
+          <ul className="space-y-2">
             {categories.map((category) => (
-              <div key={category.name} className="flex justify-between items-center">
-                <Link href={`/blog/category/${category.slug}`} className="text-sm hover:text-primary transition-colors">
-                  {category.name}
+              <li key={category.slug}>
+                <Link
+                  href={`/blog/category/${category.slug}`}
+                  className="flex items-center justify-between text-sm hover:underline"
+                >
+                  <span>{category.name}</span>
+                  <span className="text-muted-foreground">{category.count}</span>
                 </Link>
-                <Badge variant="secondary" className="text-xs">
-                  {category.count}
-                </Badge>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Tags</CardTitle>
+          <CardTitle>Popular Posts</CardTitle>
+          <CardDescription>Most read articles this month</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <Link key={tag} href={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, "-")}`}>
-                <Badge variant="outline" className="bg-muted hover:bg-primary/20 transition-colors">
-                  <Tag className="h-3 w-3 mr-1" />
-                  {tag}
-                </Badge>
-              </Link>
+          <ul className="space-y-3">
+            {popularPosts.map((post) => (
+              <li key={post.slug}>
+                <Link href={`/article/${post.slug}`} className="text-sm font-medium hover:underline">
+                  {post.title}
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </CardContent>
+        <CardFooter>
+          <Button asChild variant="outline" size="sm" className="w-full">
+            <Link href="/blog">View All Posts</Link>
+          </Button>
+        </CardFooter>
       </Card>
 
-      <Card className="bg-primary/5 border-primary/20">
+      <Card>
         <CardHeader>
-          <CardTitle>Subscribe to Premium</CardTitle>
+          <CardTitle>Newsletter</CardTitle>
+          <CardDescription>Stay updated with our latest insights</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Get unlimited access to all our premium content, templates, and resources.
-          </p>
-          <Button asChild className="w-full">
-            <Link href="/premium/subscribe">
-              Learn More
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+          <form className="space-y-4">
+            <div className="space-y-2">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              Subscribe
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>
