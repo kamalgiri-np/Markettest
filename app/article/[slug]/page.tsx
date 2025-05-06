@@ -436,28 +436,6 @@ const getArticleBySlug = (slug: string) => {
       category: "Strategy",
       tags: ["Business Models", "Innovation", "Digital Transformation", "Strategy"],
       image: "/placeholder.svg?height=600&width=1200",
-      series: {
-        title: "Business Resilience Series",
-        currentPart: 3,
-        totalParts: 3,
-        parts: [
-          {
-            title: "Navigating Economic Uncertainty",
-            slug: "navigating-economic-uncertainty",
-            isActive: false,
-          },
-          {
-            title: "Building Adaptive Teams",
-            slug: "building-adaptive-teams",
-            isActive: false,
-          },
-          {
-            title: "Future-Proofing Your Business Model",
-            slug: "future-proofing-business-model",
-            isActive: true,
-          },
-        ],
-      },
     },
     "ai-in-content-marketing": {
       title: "AI in Content Marketing: Strategies for Success in 2023",
