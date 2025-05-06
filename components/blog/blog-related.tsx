@@ -1,61 +1,66 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { ArrowRight } from "lucide-react"
 
-interface BlogRelatedProps {
-  currentSlug: string
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+
+interface BlogPost {
+  id: string
+  title: string
+  excerpt: string
+  image: string
+  category: string
+  slug: string
 }
 
-export function BlogRelated({ currentSlug }: BlogRelatedProps) {
-  // Mock related articles data - in a real app, this would come from an API
-  const relatedArticles = [
-    {
-      title: "Digital Transformation: A Guide for Traditional Businesses",
-      slug: "digital-transformation-guide",
-      excerpt: "Learn how traditional businesses can successfully navigate the digital transformation journey.",
-      image: "/placeholder.svg?height=200&width=400",
-      date: "April 12, 2023",
-      category: "Technology",
-    },
-    {
-      title: "The Rise of Remote Work: Challenges and Opportunities",
-      slug: "remote-work-challenges-opportunities",
-      excerpt: "Explore the challenges and opportunities presented by the global shift to remote work.",
-      image: "/placeholder.svg?height=200&width=400",
-      date: "May 5, 2023",
-      category: "Leadership",
-    },
-    {
-      title: "Building a Customer-Centric Organization",
-      slug: "customer-centric-organization",
-      excerpt: "Discover strategies for putting customers at the center of your business decisions.",
-      image: "/placeholder.svg?height=200&width=400",
-      date: "June 18, 2023",
-      category: "Business Strategy",
-    },
-  ].filter((article) => article.slug !== currentSlug)
+interface BlogRelatedProps {
+  posts: BlogPost[]
+  className?: string
+}
+
+export function BlogRelated({ posts, className }: BlogRelatedProps) {
+  if (posts.length === 0) return null
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {relatedArticles.map((article) => (
-        <Card key={article.slug} className="overflow-hidden">
-          <div className="aspect-video relative">
-            <Image src={article.image || "/placeholder.svg"} alt={article.title} fill className="object-cover" />
-          </div>
-          <CardContent className="p-4">
-            <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">{article.category}</div>
-              <Link href={`/article/${article.slug}`} className="block">
-                <h3 className="line-clamp-2 text-lg font-semibold hover:underline">{article.title}</h3>
+    <div className={className}>
+      <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
+      <div className="grid md:grid-cols-3 gap-6">
+        {posts.map((post) => (
+          <Card
+            key={post.id}
+            className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
+          >
+            <div className="relative h-48">
+              <Link href={`/blog/${post.slug}`}>
+                <Image
+                  src={post.image || "/placeholder.svg"}
+                  alt={post.title}
+                  fill
+                  className="object-cover transition-transform duration-500 hover:scale-105"
+                />
               </Link>
-              <p className="line-clamp-2 text-sm text-muted-foreground">{article.excerpt}</p>
             </div>
-          </CardContent>
-          <CardFooter className="p-4 pt-0">
-            <div className="text-xs text-muted-foreground">{article.date}</div>
-          </CardFooter>
-        </Card>
-      ))}
+            <CardContent className="p-4">
+              <Badge variant="outline" className="mb-2 bg-primary/10 text-primary border-primary/20">
+                {post.category}
+              </Badge>
+              <h3 className="font-bold mb-2 line-clamp-2">
+                <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
+                  {post.title}
+                </Link>
+              </h3>
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{post.excerpt}</p>
+              <Link
+                href={`/blog/${post.slug}`}
+                className="text-sm font-medium text-primary flex items-center hover:underline"
+              >
+                Read More <ArrowRight className="ml-1 h-3 w-3" />
+              </Link>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   )
 }
